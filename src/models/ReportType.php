@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -9,13 +9,14 @@
  */
 
 
-namespace lispa\amos\report\models;
+namespace open20\amos\report\models;
 
 use yii\helpers\ArrayHelper;
 
-class ReportType extends \lispa\amos\report\models\base\ReportType
+class ReportType extends \open20\amos\report\models\base\ReportType
 {
     /**
+     * @see    \yii\db\BaseActiveRecord::init()    for more info.
      */
     public function init()
     {
@@ -27,6 +28,7 @@ class ReportType extends \lispa\amos\report\models\base\ReportType
         parent::afterFind();
     }
     /**
+     * @see    \yii\base\Component::behaviors()    for more info.
      */
     public function behaviors()
     {

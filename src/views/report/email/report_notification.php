@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\views\report\email
+ * @package    open20\amos\report\views\report\email
  * @category   CategoryName
  */
 
-use lispa\amos\core\helpers\Html;
-use lispa\amos\report\AmosReport;
+use open20\amos\core\helpers\Html;
+use open20\amos\report\AmosReport;
 
 /**
- * @var \lispa\amos\core\interfaces\ContentModelInterface $contentModel
- * @var \lispa\amos\report\models\base\Report $report
- * @var \lispa\amos\admin\models\UserProfile $reportCreatorProfile
+ * @var \open20\amos\core\interfaces\ContentModelInterface $contentModel
+ * @var \open20\amos\report\models\base\Report $report
+ * @var \open20\amos\admin\models\UserProfile $reportCreatorProfile
  */
 
 ?>
@@ -39,7 +39,7 @@ use lispa\amos\report\AmosReport;
         </div>
         <div style="margin-top:20px; /*border: 2px solid green; display: flex; padding: 10px;*/">
             <div style="width: 50px; height: 50px; overflow: hidden;-webkit-border-radius: 50%; -moz-border-radius: 50%; border-radius: 50%;float: left;">
-                <?= \lispa\amos\admin\widgets\UserCardWidget::widget([
+                <?= \open20\amos\admin\widgets\UserCardWidget::widget([
                     'model' => $reportCreatorProfile,
                     'onlyAvatar' => true,
                     'absoluteUrl' => true

@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\views\report
+ * @package    open20\amos\report\views\report
  * @category   CategoryName
  */
 
-use lispa\amos\core\forms\RequiredFieldsTipWidget;
-use lispa\amos\core\forms\TextEditorWidget;
-use lispa\amos\core\helpers\Html;
-use lispa\amos\report\AmosReport;
+use open20\amos\core\forms\RequiredFieldsTipWidget;
+use open20\amos\core\forms\TextEditorWidget;
+use open20\amos\core\helpers\Html;
+use open20\amos\report\AmosReport;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
         'Indica di seguito  il tipo ed il contenuto della tua segnalazione;<br/>puoi segnalare errori o contenuti che ritieni non appropriati e richiedere una rettifica se necessario.') ?></p>
 <?php
 
-$Report = new \lispa\amos\report\models\Report();
+$Report = new \open20\amos\report\models\Report();
 $form = ActiveForm::begin([
     'id' => 'report-form',
     'enableClientValidation' => true,
@@ -38,7 +38,7 @@ $form = ActiveForm::begin([
 <?= $form->field($Report, 'creator_id')->hiddenInput(['value' => Yii::$app->user->id])->label(false); ?>
 
 <?= $form->field($Report, 'type')->widget(Select2::className(), [
-    'data' => ArrayHelper::map(lispa\amos\report\models\ReportType::find()->orderBy('name')->asArray()->all(),
+    'data' => ArrayHelper::map(open20\amos\report\models\ReportType::find()->orderBy('name')->all(),
         'id', 'name'),
     'options' => [
         'multiple' => false,

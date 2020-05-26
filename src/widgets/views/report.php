@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -8,11 +8,11 @@
  * @category   CategoryName
  */
 
-use lispa\amos\core\forms\ActiveForm;
-use lispa\amos\core\helpers\Html;
-use lispa\amos\report\AmosReport;
-use lispa\amos\report\utilities\ReportUtil;
-use lispa\amos\report\models\ReportType;
+use open20\amos\core\forms\ActiveForm;
+use open20\amos\core\helpers\Html;
+use open20\amos\report\AmosReport;
+use open20\amos\report\utilities\ReportUtil;
+use open20\amos\report\models\ReportType;
 use kartik\select2\Select2;
 use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
@@ -20,8 +20,8 @@ use yii\web\View;
 
 /*
  * @var string $content
- * @var \lispa\amos\report\widgets\ReportWidget $widget
- * @var \lispa\amos\report\models\Report $Report
+ * @var \open20\amos\report\widgets\ReportWidget $widget
+ * @var \open20\amos\report\models\Report $Report
  * @var integer $context_id
  * @var Yii\Web\View $this
  */
@@ -82,7 +82,7 @@ $this->registerJs($js, View::POS_LOAD);
     'id' => 'modal_report-'.$context_id,
     'size' => 'modal-lg'
 ]);*/
-$Report = new \lispa\amos\report\models\Report();
+$Report = new \open20\amos\report\models\Report();
 ?>
 
 <?php
@@ -107,7 +107,7 @@ $form = ActiveForm::begin([
     </div>
 
     <?= $form->field($Report, 'type')->widget(Select2::className(), [
-        'data' => ReportUtil::translateArrayValues(ArrayHelper::map(ReportType::find()->orderBy('name')->asArray()->all(),'id', 'name')),
+        'data' => ReportUtil::translateArrayValues(ArrayHelper::map(ReportType::find()->orderBy('name')->all(),'id', 'name')),
         'options' => [
             'multiple' => false,
             'placeholder' => AmosReport::t('amosreport', 'Enter name of the report type'),

@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report
+ * @package    open20\amos\report
  * @category   CategoryName
  */
 
-namespace lispa\amos\report\utilities;
+namespace open20\amos\report\utilities;
 
-use lispa\amos\report\AmosReport;
-use lispa\amos\report\models\Report;
+use open20\amos\report\AmosReport;
+use open20\amos\report\models\Report;
 
 /**
  * Class ReportUtil
- * @package lispa\amos\report\utilities
+ * @package open20\amos\report\utilities
  */
 class ReportUtil
 {
@@ -67,6 +67,16 @@ class ReportUtil
             ])
             ->asArray()
             ->all();
+    }
+
+    /**
+     * @param string $className
+     * @param integer $context_id
+     * @return integer
+     */
+    public static function retrieveReportsCount($className, $context_id){
+        return self::retrieveReportsQuery($className, $context_id)
+            ->count();
     }
 
 }

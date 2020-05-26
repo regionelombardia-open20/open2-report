@@ -1,22 +1,22 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report
+ * @package    open20\amos\report
  * @category   CategoryName
  */
 
-use lispa\amos\core\helpers\Html;
-use lispa\amos\core\icons\AmosIcons;
-use lispa\amos\core\views\AmosGridView;
-use lispa\amos\report\AmosReport;
+use open20\amos\core\helpers\Html;
+use open20\amos\core\icons\AmosIcons;
+use open20\amos\core\views\AmosGridView;
+use open20\amos\report\AmosReport;
 use yii\bootstrap\Modal;
 use yii\web\View;
 use yii\widgets\Pjax;
 
-/** @var \lispa\amos\core\record\Record $model */
+/** @var \open20\amos\core\record\Record $model */
 
 $js = <<<JS
   
@@ -74,9 +74,9 @@ $this->registerJs($js, View::POS_READY);
                 'label' => AmosReport::t('amosreport', 'Photo'),
                 'format' => 'raw',
                 'value' => function ($model) {
-                    /** @var \lispa\amos\admin\models\UserProfile $userProfile */
+                    /** @var \open20\amos\admin\models\UserProfile $userProfile */
                     $userProfile = $model->user->getProfile();
-                    return \lispa\amos\admin\widgets\UserCardWidget::widget(['model' => $userProfile]);
+                    return \open20\amos\admin\widgets\UserCardWidget::widget(['model' => $userProfile]);
                 }
             ],
             'name' => [
@@ -122,23 +122,23 @@ $this->registerJs($js, View::POS_READY);
                 ],
             ],
             [
-                'class' => 'lispa\amos\core\views\grid\ActionColumn',
+                'class' => 'open20\amos\core\views\grid\ActionColumn',
                 'template' => '{readConfirmation}',
                 'buttons' => [
                     'readConfirmation' => function ($url, $model) {
-                        /** @var \lispa\amos\report\models\Report $model */
+                        /** @var \open20\amos\report\models\Report $model */
                         $btn = '';
                         if (!$model->status) {
                             $userId = Yii::$app->user->id;
                             $notify = Yii::$app->getModule('notify');
                             $notification = null;
                             if(isset($notify)) {
-                                $notification = \lispa\amos\notificationmanager\models\Notification::findOne([
-                                    'class_name' => \lispa\amos\report\models\Report::className(),
+                                $notification = \open20\amos\notificationmanager\models\Notification::findOne([
+                                    'class_name' => \open20\amos\report\models\Report::className(),
                                     'content_id' => $model->id,
                                 ]);
                                 if(!empty($notification)) {
-                                    $notificationRead = \lispa\amos\notificationmanager\models\NotificationsRead::findOne([
+                                    $notificationRead = \open20\amos\notificationmanager\models\NotificationsRead::findOne([
                                         'notification_id' => $notification->id,
                                         'user_id' => $userId
                                     ]);

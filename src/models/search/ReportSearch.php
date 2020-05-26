@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\models\search
+ * @package    open20\amos\report\models\search
  * @category   Model
  */
 
-namespace lispa\amos\report\models\search;
+namespace open20\amos\report\models\search;
 
-use lispa\amos\report\models\Report;
-use lispa\amos\notificationmanager\AmosNotify;
-use lispa\amos\notificationmanager\models\NotificationChannels;
+use open20\amos\report\models\Report;
+use open20\amos\notificationmanager\AmosNotify;
+use open20\amos\notificationmanager\models\NotificationChannels;
 use Yii;
 use yii\base\Exception;
 use yii\base\Model;
@@ -22,11 +22,12 @@ use yii\db\ActiveQuery;
 use yii\log\Logger;
 
 /**
- * ReportSearch represents the model behind the search form about `lispa\amos\report\models\Report`.
+ * ReportSearch represents the model behind the search form about `open20\amos\report\models\Report`.
  */
 class ReportSearch extends Report
 {
     /**
+     * @see    \yii\base\Model::scenarios()    for more info.
      */
     public function scenarios()
     {

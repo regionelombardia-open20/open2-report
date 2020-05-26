@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\migrations
+ * @package    open20\amos\report\migrations
  * @category   Migration
  */
 
-use lispa\amos\report\models\Report;
+use open20\amos\report\models\Report;
 use yii\db\Migration;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -9,16 +9,18 @@
  */
 
 
-use lispa\amos\report\AmosReport;
+use open20\amos\report\AmosReport;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\datecontrol\DateControl;
 
 /**
  * @var yii\web\View $this
- * @var lispa\amos\report\models\search\ReportSearch $model
+ * @var open20\amos\report\models\search\ReportSearch $model
  * @var yii\widgets\ActiveForm $form
  */
+
+$enableAutoOpenSearchPanel = !isset(\Yii::$app->params['enableAutoOpenSearchPanel']) || \Yii::$app->params['enableAutoOpenSearchPanel'] === true;
 ?>
 
 <div class="report-search element-to-toggle" data-toggle-element="form-search">
@@ -32,7 +34,7 @@ use kartik\datecontrol\DateControl;
         ]
     ]);
 
-    echo Html::hiddenInput("enableSearch", "1");
+    echo Html::hiddenInput("enableSearch", $enableAutoOpenSearchPanel);
     echo Html::hiddenInput("currentView", Yii::$app->request->getQueryParam('currentView'));
     ?>
 

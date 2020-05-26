@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -8,22 +8,25 @@
  * @category   Widget
  */
 
-namespace lispa\amos\report\widgets;
+namespace open20\amos\report\widgets;
 
-use lispa\amos\core\helpers\Html;
-use lispa\amos\core\icons\AmosIcons;
-use lispa\amos\core\utilities\ModalUtility;
-use lispa\amos\core\module\BaseAmosModule;
-use lispa\amos\core\record\Record;
-use lispa\amos\report\AmosReport;
-use lispa\amos\report\utilities\ReportUtil;
+use open20\amos\core\helpers\Html;
+use open20\amos\core\icons\AmosIcons;
+use open20\amos\core\utilities\ModalUtility;
+use open20\amos\core\module\BaseAmosModule;
+use open20\amos\core\widget\WidgetAbstract;
+use open20\amos\core\record\Record;
+use open20\amos\report\AmosReport;
+use open20\amos\report\models\Report;
+use open20\amos\report\utilities\ReportUtil;
 use Yii;
 use yii\base\Widget;
 use yii\bootstrap\Dropdown;
+use yii\data\ActiveDataProvider;
 
 /**
  * Class ReportDropdownWidget
- * @package lispa\amos\report\widgets
+ * @package open20\amos\report\widgets
  */
 class ReportDropdownWidget extends Widget
 {
@@ -38,7 +41,7 @@ class ReportDropdownWidget extends Widget
     public $model = null;
 
     /**
-     * @var null
+     * @var integer model id
      */
     public $context_id = null;
 
@@ -46,6 +49,7 @@ class ReportDropdownWidget extends Widget
      * @var string
      */
     public $layout = "{reportButton}";
+    
     /**
      * @var array
      */
@@ -56,10 +60,20 @@ class ReportDropdownWidget extends Widget
      */
     public $title = '';
 
+    /**
+     *
+     * @var boolean
+     */
     public $renderListModalWidget = false;
 
+    /**
+     * @var string
+     */
     public $permissionName = null;
 
+    /**
+     * @var boolean
+     */
     private $hasPermission = false;
 
     /**
@@ -82,9 +96,7 @@ class ReportDropdownWidget extends Widget
             $this->hasPermission = (Yii::$app->user->can(strtoupper($this->model->formName() . '_UPDATE'), ['model' => $this->model])
                 || \Yii::$app->user->can($this->modelClassName . '_UPDATE', ['model' => $this->model]));
         }
-
     }
-
 
     /**
      * @return mixed
@@ -106,20 +118,55 @@ class ReportDropdownWidget extends Widget
 
         echo $content;
 
-        $modalContent = $reportsListModalWidget . $this->render('report', [
+        $modalContentWarning = $reportsListModalWidget . $this->render('report', [
                 'widget' => $this,
                 'context_id' => $this->context_id,
                 'className' => $this->modelClassName,
                 'title' => $this->title
             ]);
 
-        return ModalUtility::amosModal([
+        $modalCreateReport = ModalUtility::amosModal([
             'id' => 'modal_report-' . $this->context_id,
             'headerClass' => 'modal-utility-warning',
             'headerText' => AmosIcons::show('flag') . AmosReport::t('amosreport', '#reports_content_list_modal-title'),
-            'modalBodyContent' => $modalContent,
+            'modalBodyContent' => $modalContentWarning,
             'modalClassSize' => 'modal-lg'
         ]);
+
+        /** @var ActiveQuery $query */
+        $query = Report::find()->andWhere([
+            'classname' => $this->model->className(),
+            'context_id' => $this->model->id
+        ]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+//            'pagination' => [
+//                'pageSize' => $limit,
+//            ]
+            'sort' => [
+                'defaultOrder' => [
+                    'status' => SORT_ASC,
+                    'created_at' => SORT_ASC
+                ]
+            ]
+        ]);
+
+        $modalContentList = $this->render('modal-reports-list', [
+            'model' => $this->model,
+            'dataProvider' => $dataProvider,
+            'context_id' => $this->model->id,
+        ]);
+
+        $modalListReport = ModalUtility::amosModal([
+            'id' => 'modal_reports_list-' . $this->model->id,
+            'headerClass' => 'modal-utility-confirm',
+            'headerText' => AmosIcons::show('flag') . AmosReport::t('amosreport', '#reports_content_list_modal-title'),
+            'modalBodyContent' => $modalContentList,
+            'modalClassSize' => 'modal-lg'
+        ]);
+
+        return $modalCreateReport . $modalListReport;
     }
 
     /**
@@ -171,12 +218,19 @@ class ReportDropdownWidget extends Widget
             'items' => $items,
         ]);
 
-        $reportsCount = count(ReportUtil::retrieveReports($this->modelClassName, $this->context_id));
+        $reportsCount = ReportUtil::retrieveReportsCount($this->modelClassName, $this->context_id);
+
+        $icon = AmosIcons::show('flag');
+        if (!empty(\Yii::$app->params['dashboardEngine']) && \Yii::$app->params['dashboardEngine'] == WidgetAbstract::ENGINE_ROWS) {
+            if ($this->modelClassName == 'open20\amos\community\models\Community') {
+                $icon = AmosIcons::show('segnalazioni', [], AmosIcons::IC);
+            }
+        }
 
         $button = Html::tag('div',
             Html::a(
-                AmosIcons::show('flag') .
-                Html::tag('span', '(' . $reportsCount . ')', ['class' => 'counter']) .
+                $icon .
+                Html::tag('span', $reportsCount, ['class' => 'counter']) .
                 Html::tag('b', '', ['class' => 'caret']),
                 '#',
                 [
@@ -190,6 +244,5 @@ class ReportDropdownWidget extends Widget
 
         return $button;
     }
-
 
 }

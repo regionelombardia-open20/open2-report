@@ -1,0 +1,8 @@
+# Deploy changes to open20 gitlab
+
+pipelines:
+  branches:
+    master:
+      - step:
+          script:
+            - git push --all git@git.open20.it:mirror/amos-report.git

@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -8,17 +8,17 @@
  * @category   CategoryName
  */
 
-use lispa\amos\core\views\DataProviderView;
-use lispa\amos\report\AmosReport;
+use open20\amos\core\views\DataProviderView;
+use open20\amos\report\AmosReport;
 use yii\widgets\Pjax;
-use lispa\amos\core\helpers\Html;
+use open20\amos\core\helpers\Html;
 use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
- * @var lispa\amos\report\models\search\ReportSearch $searchModel
- * @var \lispa\amos\dashboard\models\AmosUserDashboards $currentDashboard
+ * @var open20\amos\report\models\search\ReportSearch $searchModel
+ * @var \open20\amos\dashboard\models\AmosUserDashboards $currentDashboard
  *
  */
 
@@ -55,7 +55,7 @@ echo DataProviderView::widget([
                 'attribute' => 'status',
             ],
             [
-                'class' => 'lispa\amos\core\views\grid\ActionColumn',
+                'class' => 'open20\amos\core\views\grid\ActionColumn',
             ]
         ]
     ]

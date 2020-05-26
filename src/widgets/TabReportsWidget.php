@@ -1,26 +1,26 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report
+ * @package    open20\amos\report
  * @category   CategoryName
  */
 
-namespace lispa\amos\report\widgets;
+namespace open20\amos\report\widgets;
 
-use lispa\amos\core\module\BaseAmosModule;
-use lispa\amos\core\record\Record;
-use lispa\amos\report\AmosReport;
-use lispa\amos\report\models\Report;
+use open20\amos\core\module\BaseAmosModule;
+use open20\amos\core\record\Record;
+use open20\amos\report\AmosReport;
+use open20\amos\report\models\Report;
 use yii\base\Widget;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 
 /**
  * Class TabReportsWidget
- * @package lispa\amos\report\widgets
+ * @package open20\amos\report\widgets
  */
 class TabReportsWidget extends Widget
 {

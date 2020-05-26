@@ -1,26 +1,27 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report
+ * @package    open20\amos\report
  * @category   CategoryName
  */
 
-namespace lispa\amos\report;
+namespace open20\amos\report;
 
-use lispa\amos\core\module\AmosModule;
-use lispa\amos\core\module\ModuleInterface;
-use lispa\amos\notificationmanager\models\Notification;
-use lispa\amos\notificationmanager\models\NotificationsRead;
-use lispa\amos\report\models\Report;
+use open20\amos\core\module\AmosModule;
+use open20\amos\core\module\ModuleInterface;
+use open20\amos\notificationmanager\models\Notification;
+use open20\amos\notificationmanager\models\NotificationsRead;
+use open20\amos\notificationmanager\models\NotificationChannels;
+use open20\amos\report\models\Report;
 use Yii;
 use yii\db\ActiveQuery;
 
 /**
  * Class AmosReport
- * @package lispa\amos\report
+ * @package open20\amos\report
  */
 class AmosReport extends AmosModule implements ModuleInterface
 {
@@ -31,31 +32,27 @@ class AmosReport extends AmosModule implements ModuleInterface
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
      * will be taken. If this is false, layout will be disabled within this module.
      */
-    public $layout = 'main';
-
-    public $name = 'Report';
-
-    public $controllerNamespace = 'lispa\amos\report\controllers';
+    public $layout              = 'main';
+    public $name                = 'Report';
+    public $controllerNamespace = 'open20\amos\report\controllers';
 
     /**
      * @var array
      */
     public $modelsEnabled = [
-
     ];
 
     /**
      * This is the html used to render the subject of the e-mail.
      * @var string
      */
-    public $htmlMailSubject = '@vendor/lispa/amos-report/src/views/report/email/report_notification_subject';
+    public $htmlMailSubject = '@vendor/open20/amos-report/src/views/report/email/report_notification_subject';
 
     /**
      * This is the html used to render the message of the e-mail.
      * @var string
      */
-    public $htmlMailContent = '@vendor/lispa/amos-report/src/views/report/email/report_notification';
-
+    public $htmlMailContent = '@vendor/open20/amos-report/src/views/report/email/report_notification';
 
     public static function getModuleName()
     {
@@ -66,22 +63,20 @@ class AmosReport extends AmosModule implements ModuleInterface
     {
         parent::init();
 
-        \Yii::setAlias('@lispa/amos/' . static::getModuleName() . '/controllers', __DIR__ . '/controllers');
+        \Yii::setAlias('@open20/amos/'.static::getModuleName().'/controllers', __DIR__.'/controllers');
         // initialize the module with the configuration loaded from config.php
-        Yii::configure($this, require(__DIR__ . DIRECTORY_SEPARATOR . self::$CONFIG_FOLDER . DIRECTORY_SEPARATOR . 'config.php'));
+        Yii::configure($this, require(__DIR__.DIRECTORY_SEPARATOR.self::$CONFIG_FOLDER.DIRECTORY_SEPARATOR.'config.php'));
     }
 
     public function getWidgetIcons()
     {
         return [
-
         ];
     }
 
     public function getWidgetGraphics()
     {
         return [
-
         ];
     }
 
@@ -91,9 +86,9 @@ class AmosReport extends AmosModule implements ModuleInterface
     protected function getDefaultModels()
     {
         return [
-            'Report' => __NAMESPACE__ . '\\' . 'models\Report',
-            'ReportType' => __NAMESPACE__ . '\\' . 'models\ReportType',
-            'ReportSearch' => __NAMESPACE__ . '\\' . 'models\ReportSearch',
+            'Report' => __NAMESPACE__.'\\'.'models\Report',
+            'ReportType' => __NAMESPACE__.'\\'.'models\ReportType',
+            'ReportSearch' => __NAMESPACE__.'\\'.'models\ReportSearch',
         ];
     }
 
@@ -104,18 +99,21 @@ class AmosReport extends AmosModule implements ModuleInterface
      * @return ActiveQuery $query of unread report sent to $userId
      *
      */
-    public function getOwnUnreadReports($userId = null){
+    public function getOwnUnreadReports($userId = null)
+    {
 
-        if(empty($userId)){
+        if (empty($userId)) {
             $userId = \Yii::$app->user->id;
         }
-        $notificationTable = Notification::tableName();
+        $notificationTable     = Notification::tableName();
         $notificationReadTable = NotificationsRead::tableName();
-        $query = Report::find()->andWhere('report.creator_id = '.$userId . ' OR report.validator_id = '.$userId);
-        $query->leftJoin($notificationTable, $notificationTable.".class_name = '".Report::className(). "' AND ".$notificationTable. '.content_id = report.id');
-        $query->leftJoin($notificationReadTable, $notificationReadTable.'.notification_id = '.$notificationTable .'.id');
+        $query                 = Report::find()->andWhere('report.creator_id = '.$userId.' OR report.validator_id = '.$userId);
+        $query->leftJoin($notificationTable,
+            $notificationTable.".class_name = '".Report::className()."' AND ".$notificationTable.".content_id = report.id AND notification.channels = '".NotificationChannels::CHANNEL_READ."'");
+        $query->leftJoin($notificationReadTable,
+            $notificationReadTable.'.notification_id = '.$notificationTable.'.id AND notificationread.user_id = '.$userId);
         $query->andWhere('report.deleted_at is NULL');
-        $query->andWhere($notificationReadTable.'.user_id is null OR '. $notificationReadTable.'.user_id <> '.$userId);
+        $query->andWhere($notificationReadTable.'.user_id is null OR '.$notificationReadTable.'.user_id <> '.$userId);
         return $query;
     }
 }

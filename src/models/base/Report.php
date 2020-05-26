@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -8,9 +8,9 @@
  * @category   Model
  */
 
-namespace lispa\amos\report\models\base;
+namespace open20\amos\report\models\base;
 
-use lispa\amos\report\AmosReport;
+use open20\amos\report\AmosReport;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -35,14 +35,15 @@ use yii\helpers\ArrayHelper;
  * @property    integer $updated_by
  * @property    integer $deleted_by
  *
- * @property \lispa\amos\report\models\ReportType $reportType
- * @property \lispa\amos\core\user\User $user
+ * @property \open20\amos\report\models\ReportType $reportType
+ * @property \open20\amos\core\user\User $user
  *
- * @package lispa\amos\report\models\base
+ * @package open20\amos\report\models\base
  */
-class Report extends \lispa\amos\core\record\Record
+class Report extends \open20\amos\core\record\Record
 {
     /**
+     * @see    \yii\db\ActiveRecord::tableName()    for more info.
      */
     public static function tableName()
     {
@@ -50,6 +51,7 @@ class Report extends \lispa\amos\core\record\Record
     }
 
     /**
+     * @see    \yii\base\Model::rules()    for more info.
      */
     public function rules()
     {
@@ -75,6 +77,7 @@ class Report extends \lispa\amos\core\record\Record
     }
 
     /**
+     * @see    \open20\amos\core\record\Record::attributeLabels()    for more info.
      */
     public function attributeLabels()
     {
@@ -107,12 +110,12 @@ class Report extends \lispa\amos\core\record\Record
      */
     public function getReportType()
     {
-        return $this->hasOne(\lispa\amos\report\models\ReportType::className(), ['id' => 'type']);
+        return $this->hasOne(\open20\amos\report\models\ReportType::className(), ['id' => 'type']);
     }
 
     public function getUser()
     {
-        return $this->hasOne(\lispa\amos\core\user\User::className(), ['id' => 'created_by']);
+        return $this->hasOne(\open20\amos\core\user\User::className(), ['id' => 'created_by']);
     }
 
 }

@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\views\report\email
+ * @package    open20\amos\report\views\report\email
  * @category   CategoryName
  */
 
-use lispa\amos\report\AmosReport;
+use open20\amos\report\AmosReport;
 
 /**
  * @var string $reportCreatorName
- * @var \lispa\amos\core\record\Record $contentModel
+ * @var \open20\amos\core\record\Record $contentModel
  */
 
 ?>

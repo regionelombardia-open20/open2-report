@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\controllers
+ * @package    open20\amos\report\controllers
  * @category   Controller
  */
 
-namespace lispa\amos\report\controllers;
+namespace open20\amos\report\controllers;
 
-use lispa\amos\core\controllers\CrudController;
-use lispa\amos\core\helpers\Html;
-use lispa\amos\core\icons\AmosIcons;
-use lispa\amos\core\user\User;
-use lispa\amos\core\utilities\Email;
-use lispa\amos\notificationmanager\models\NotificationsRead;
-use lispa\amos\report\AmosReport;
-use lispa\amos\report\models\Report;
-use lispa\amos\report\models\search\ReportSearch;
+use open20\amos\core\controllers\CrudController;
+use open20\amos\core\helpers\Html;
+use open20\amos\core\icons\AmosIcons;
+use open20\amos\core\user\User;
+use open20\amos\core\utilities\Email;
+use open20\amos\notificationmanager\models\NotificationsRead;
+use open20\amos\report\AmosReport;
+use open20\amos\report\models\Report;
+use open20\amos\report\models\search\ReportSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -28,7 +28,7 @@ use yii\helpers\Url;
 
 /**
  * Class ReportController
- * @package lispa\amos\report\controllers
+ * @package open20\amos\report\controllers
  */
 class ReportController extends CrudController
 {
@@ -144,7 +144,7 @@ class ReportController extends CrudController
                 $read_by = \Yii::$app->user->id;
                 $ok = true;
                 if (!empty($post['notification_id'])) {
-                    $notificationRead = new \lispa\amos\notificationmanager\models\NotificationsRead();
+                    $notificationRead = new \open20\amos\notificationmanager\models\NotificationsRead();
                     $notificationRead->user_id = $read_by;
                     $notificationRead->notification_id = $post['notification_id'];
                     $ok = $notificationRead->save(false);
@@ -172,7 +172,7 @@ class ReportController extends CrudController
                 $model = $this->findModel($id);
                 $read_by = \Yii::$app->user->id;
                 $ok = true;
-                $notification = \lispa\amos\notificationmanager\models\Notification::findOne([
+                $notification = \open20\amos\notificationmanager\models\Notification::findOne([
                     'class_name' => Report::className(),
                     'content_id' => $model->id,
                 ]);
@@ -210,7 +210,7 @@ class ReportController extends CrudController
     }
 
     /**
-     * Set a view param used in \lispa\amos\core\forms\CreateNewButtonWidget
+     * Set a view param used in \open20\amos\core\forms\CreateNewButtonWidget
      */
     private function setCreateNewBtnLabel()
     {
@@ -318,7 +318,7 @@ class ReportController extends CrudController
 
             }
             else {
-                $contentView = "@vendor/lispa/amos-report/src/views/report/email/report_notification";
+                $contentView = "@vendor/open20/amos-report/src/views/report/email/report_notification";
                 $contentViewSubject = $contentView . "_subject";
             }
 
@@ -351,7 +351,7 @@ class ReportController extends CrudController
      */
     public function sendMail($from, $tos, $subject, $text, $files = [], $bcc = [])
     {
-        /** @var \lispa\amos\emailmanager\AmosEmail $mailModule */
+        /** @var \open20\amos\emailmanager\AmosEmail $mailModule */
         $mailModule = Yii::$app->getModule("email");
         if (isset($mailModule)) {
             if (is_null($from)) {
@@ -378,7 +378,7 @@ class ReportController extends CrudController
         }
         $module = \Yii::$app->getModule('layout');
         if (empty($module)) {
-            $this->layout = '@vendor/lispa/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
+            $this->layout = '@vendor/open20/amos-core/views/layouts/' . (!empty($layout) ? $layout : $this->layout);
             return true;
         }
         $this->layout = (!empty($layout)) ? $layout : $this->layout;

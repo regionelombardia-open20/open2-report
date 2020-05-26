@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -8,20 +8,20 @@
  * @category   Widget
  */
 
-namespace lispa\amos\report\widgets;
+namespace open20\amos\report\widgets;
 
-use lispa\amos\core\helpers\Html;
-use lispa\amos\core\icons\AmosIcons;
-use lispa\amos\core\module\BaseAmosModule;
-use lispa\amos\core\record\Record;
-use lispa\amos\report\AmosReport;
-use lispa\amos\report\utilities\ReportUtil;
+use open20\amos\core\helpers\Html;
+use open20\amos\core\icons\AmosIcons;
+use open20\amos\core\module\BaseAmosModule;
+use open20\amos\core\record\Record;
+use open20\amos\report\AmosReport;
+use open20\amos\report\utilities\ReportUtil;
 use Yii;
 use yii\base\Widget;
 
 /**
  * Class ReportWidget
- * @package lispa\amos\report\widgets
+ * @package open20\amos\report\widgets
  */
 class ReportFlagWidget extends Widget
 {
@@ -97,15 +97,17 @@ class ReportFlagWidget extends Widget
 
             return $content === false ? $matches[0] : $content;
         }, $this->layout);
+        
         $options = $this->options;
 
         if($this->hasPermission) {
-            return $content . ReportsListModalWidget::widget([
+            return $content 
+                . ReportsListModalWidget::widget([
                     'model' => $this->model
                 ]);
-        } else {
-            return '';
         }
+        
+        return '';
     }
 
     /**
@@ -133,17 +135,28 @@ class ReportFlagWidget extends Widget
     public function renderReportButton()
     {
 
-        $button =
-            Html::tag('div',
-                Html::a(AmosIcons::show("flag", ["class" => "am-2"]), null, [
+        return Html::tag(
+            'div',
+            Html::a(
+                AmosIcons::show(
+                    'flag', 
+                    ['class' => 'am-2']
+                ), 
+                null, 
+                [
                     'id' => 'load_reports_list_from_flag-' . $this->context_id,
                     'title' => AmosReport::t('amosreport', '#view_reports_list'),
-                ]),
-                ['class' => 'reportflag-widget' . (count(ReportUtil::retrieveUnreadReports($this->modelClassName, $this->context_id)) > 0 ? ' unread-report' : '')]);
-
-        return $button;
+                ]
+            ),
+            [
+                'class' => 'reportflag-widget' 
+                    . (count(ReportUtil::retrieveUnreadReports($this->modelClassName, $this->context_id)) > 0 
+                        ? ' unread-report' 
+                        : ''
+                    )
+            ]
+        );
 
     }
-
 
 }

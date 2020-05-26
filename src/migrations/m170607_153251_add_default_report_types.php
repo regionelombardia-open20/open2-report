@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
- * @package    lispa\amos\report\migrations
+ * @package    open20\amos\report\migrations
  * @category   CategoryName
  */
 
@@ -21,7 +21,7 @@ class m170607_153251_add_default_report_types extends Migration
      */
     public function safeUp()
     {
-        $reportType = new \lispa\amos\report\models\ReportType();
+        $reportType = new \open20\amos\report\models\ReportType();
         $reportType->name = "Inappropriate contents";
         $reportType->description = "Inappropriate contents";
         $ok = $reportType->detachBehaviors();
@@ -32,7 +32,7 @@ class m170607_153251_add_default_report_types extends Migration
             return false;
         }
 
-        $reportType = new \lispa\amos\report\models\ReportType();
+        $reportType = new \open20\amos\report\models\ReportType();
         $reportType->name = "Errors";
         $reportType->description = "Errors";
         $ok = $reportType->detachBehaviors();

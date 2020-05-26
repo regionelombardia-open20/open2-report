@@ -1,6 +1,6 @@
 <?php
 /**
- * Lombardia Informatica S.p.A.
+ * Aria S.p.A.
  * OPEN 2.0
  *
  *
@@ -8,9 +8,9 @@
  * @category   Model
  */
 
-namespace lispa\amos\report\models\base;
+namespace open20\amos\report\models\base;
 
-use lispa\amos\report\AmosReport;
+use open20\amos\report\AmosReport;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -29,11 +29,12 @@ use yii\helpers\ArrayHelper;
  * @property    integer $deleted_by
  *
  *
- * @package lispa\amos\report\models\base
+ * @package open20\amos\report\models\base
  */
-class ReportType  extends \lispa\amos\core\record\Record
+class ReportType  extends \open20\amos\core\record\Record
 {
     /**
+     * @see    \yii\db\ActiveRecord::tableName()    for more info.
      */
     public static function tableName()
     {
@@ -41,6 +42,7 @@ class ReportType  extends \lispa\amos\core\record\Record
     }
 
     /**
+     * @see    \yii\base\Model::rules()    for more info.
      */
     public function rules()
     {
@@ -53,6 +55,7 @@ class ReportType  extends \lispa\amos\core\record\Record
     }
 
     /**
+     * @see    \open20\amos\core\record\Record::attributeLabels()    for more info.
      */
     public function attributeLabels()
     {
