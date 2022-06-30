@@ -157,23 +157,19 @@ $this->registerJs($js, View::POS_READY);
                                                 success: function(response) {
                                                     if(response) {
                                                         $('#ask-confirmation-message-".$model->id."').html('".
-                                    AmosReport::t('amosreport', 'The report has been updated')."');
-                                                        $('#read-confirmation-popup-".$model->id."').find('.confirm-modal-btn').addClass('hidden');
-                                                        $('#read-confirmation-btn-".$model->id."').removeClass('read-confirmation').addClass('hidden');
-                                                        
-                                                        var countNotRead = $('.read-confirmation').length;
-                                                        if(countNotRead > 0){
-                                                            $('#tab-reports-bullet').text(countNotRead);
-                                                            $('#tab-reports-bullet').removeClass('hidden');
-                                                        }else{
-                                                           $('#tab-reports-bullet').addClass('hidden'); 
-                                                        }
-//                                                        $.pjax.reload({container:'#reports-pjax'});
+														AmosReport::t('amosreport', 'The report has been updated')."');
+														setTimeout(
+															  function() 
+															  {
+																location.reload();
+															  }, 
+														3000);
                                                     }    
                                                 }
                                             });
                                             return false;
                                 ";
+								echo Html::tag('div','',['id' => 'ask-confirmation-message-'.$model->id]);
                                 $btn = Html::a(
                                     AmosIcons::show('square-check', [], 'dash') . "&nbsp;" . AmosReport::t('amosreport',
                                         'Read confirmation'),

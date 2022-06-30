@@ -162,7 +162,7 @@ $form = ActiveForm::begin([
 <div class="success-message hidden">
     <p><?= AmosReport::t("amosreport", "Your report has been correctly sent.") ?></p>
     <div class="form-group"><div class="bk-btnFormContainer">
-            <?= Html::button(AmosReport::t('amosreport', 'Close'), ['class' => 'btn btn-secondary pull-right', 'data-dismiss' => 'modal'])?><br/>
+            <?= Html::button(AmosReport::t('amosreport', 'Close'), ['class' => 'btn btn-secondary pull-right', 'onclick' =>'window.location.reload();', 'data-dismiss' => 'modal'])?><br/>
             </div>
     </div>
 </div>

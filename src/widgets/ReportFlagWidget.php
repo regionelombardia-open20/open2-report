@@ -142,10 +142,11 @@ class ReportFlagWidget extends Widget
                     'flag', 
                     ['class' => 'am-2']
                 ), 
-                null, 
+                '#', 
                 [
                     'id' => 'load_reports_list_from_flag-' . $this->context_id,
                     'title' => AmosReport::t('amosreport', '#view_reports_list'),
+                    'tabindex' => 0
                 ]
             ),
             [
