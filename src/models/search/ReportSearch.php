@@ -27,7 +27,6 @@ use yii\log\Logger;
 class ReportSearch extends Report
 {
     /**
-     * @see    \yii\base\Model::scenarios()    for more info.
      */
     public function scenarios()
     {

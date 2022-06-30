@@ -18,16 +18,17 @@ use yii\bootstrap\Modal;
 use yii\helpers\ArrayHelper;
 use yii\web\View;
 
-/*
+/**
  * @var string $content
  * @var \open20\amos\report\widgets\ReportWidget $widget
  * @var \open20\amos\report\models\Report $Report
  * @var integer $context_id
+ * @var string $pjaxId
  * @var Yii\Web\View $this
  */
 
 $js = <<<JS
-  
+
     $("#load_form-$context_id").on("click",function(e) {
         e.preventDefault();
         $("#modal_report-$context_id").modal('show');
@@ -43,14 +44,15 @@ $js = <<<JS
                 if(response) {
                     $("#report-form_$context_id").find(".form-content").removeClass("hidden");
                     $("#report-form_$context_id").find(".success-message").addClass("hidden");
-                }    
+                }
             }
         });
         return false;
-    });          
+    });
 
-    $(".modal-body").on("submit","#report-form_$context_id",function(e) {    
-        e.preventDefault();       
+    $(".modal-body").on("submit","#report-form_$context_id",function(e) {
+        e.preventDefault();
+        $('#submitReportForm').prop('disabled', true);
         var form = $("#report-form_$context_id");
             $.ajax({
             url: '/report/report/create',
@@ -58,23 +60,40 @@ $js = <<<JS
             type: 'POST',
             data: form.serialize(),
             success: function(response) {
-                if(response) {        
+                if(response) {
                     $("#report-form_$context_id").find(".form-content").addClass("hidden");
                     $("#report-form_$context_id").find(".success-message").removeClass("hidden");
                     $("#report-form_$context_id")[0].reset();
-                }    
+                    updateMyCounter('{$pjaxId}');
+                }
+            },
+            complete: function(evento) {
+                $('#submitReportForm').prop('disabled', false);
             }
         });
         return false;
     });
-   
-    
+
 JS;
 
 $this->registerJs($js, View::POS_LOAD);
 
+$js2 = <<<JS
+
+    function updateMyCounter(containerId) {
+        var content = $("#" + containerId + "").find(".counter");
+        var valueOfContent = content.text();
+        if ($.isNumeric(valueOfContent)) {
+            content.text( (parseInt(valueOfContent) + 1) );
+        }
+      };
+
+JS;
+
+$this->registerJs($js2, View::POS_HEAD);
 ?>
-<? /*= $content*/ ?>
+
+<?php /*= $content*/ ?>
 
 <?php
 /*Modal::begin([
@@ -94,7 +113,10 @@ $form = ActiveForm::begin([
     ],
     'action' => '/report/report/create'
 ]) ?>
+
+
 <div class="form-content">
+
     <?php if(!empty($title)){
         echo "<h3>".$title."</h3>";
     }?>

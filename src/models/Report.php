@@ -17,7 +17,6 @@ use yii\helpers\ArrayHelper;
 class Report extends \open20\amos\report\models\base\Report
 {
     /**
-     * @see    \yii\db\BaseActiveRecord::init()    for more info.
      */
     public function init()
     {
@@ -29,7 +28,6 @@ class Report extends \open20\amos\report\models\base\Report
         parent::afterFind();
     }
     /**
-     * @see    \yii\base\Component::behaviors()    for more info.
      */
     public function behaviors()
     {

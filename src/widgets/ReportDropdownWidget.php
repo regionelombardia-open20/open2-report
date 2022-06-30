@@ -23,6 +23,7 @@ use Yii;
 use yii\base\Widget;
 use yii\bootstrap\Dropdown;
 use yii\data\ActiveDataProvider;
+use yii\widgets\Pjax;
 
 /**
  * Class ReportDropdownWidget
@@ -49,7 +50,7 @@ class ReportDropdownWidget extends Widget
      * @var string
      */
     public $layout = "{reportButton}";
-    
+
     /**
      * @var array
      */
@@ -90,6 +91,21 @@ class ReportDropdownWidget extends Widget
             $this->context_id = $this->model->id;
         }
 
+        \Yii::$app->view->registerJs(
+           '$("document").ready(function(){
+                $("#report-form_'.$this->context_id.'").on("success", function(event, xhr, status) {
+                    console.log("#report-'.$this->context_id.'");
+                    $.pjax.reload({
+                        container: "#report-'.$this->context_id.'",
+                        url: window.location.href,
+                        method: "get",
+                        timeout: 10000
+                    });
+                });
+            });',
+            yii\web\View::POS_END
+        );
+
         if (!is_null($this->permissionName)) {
             $this->hasPermission = Yii::$app->user->can($this->permissionName, ['model' => $this->model]);
         } else {
@@ -103,70 +119,77 @@ class ReportDropdownWidget extends Widget
      */
     public function run()
     {
-        $content = preg_replace_callback("/{\\w+}/", function ($matches) {
-            $content = $this->renderSection($matches[0]);
+        if(!\Yii::$app->user->isGuest) {
+            $content = preg_replace_callback("/{\\w+}/", function ($matches) {
+                $content = $this->renderSection($matches[0]);
 
-            return $content === false ? $matches[0] : $content;
-        }, $this->layout);
+                return $content === false ? $matches[0] : $content;
+            }, $this->layout);
 
-        $reportsListModalWidget = '';
-        if ($this->renderListModalWidget && $this->hasPermission) {
-            $reportsListModalWidget = ReportsListModalWidget::widget([
-                'model' => $this->model
+            $reportsListModalWidget = '';
+            if ($this->renderListModalWidget && $this->hasPermission) {
+                $reportsListModalWidget = ReportsListModalWidget::widget([
+                    'model' => $this->model
+                ]);
+            }
+            $pjaxId = 'report-'.$this->context_id;
+
+            Pjax::begin(['id' => $pjaxId]);
+            echo $content;
+            Pjax::end();
+
+            $modalContentWarning = $reportsListModalWidget . $this->render('report', [
+                    'widget' => $this,
+                    'context_id' => $this->context_id,
+                    'className' => $this->modelClassName,
+                    'title' => $this->title,
+                    'pjaxId' => $pjaxId
+                ]);
+
+            $modalCreateReport = ModalUtility::amosModal([
+                'id' => 'modal_report-' . $this->context_id,
+                'headerClass' => 'modal-utility-warning',
+                'headerText' => AmosIcons::show('flag') . AmosReport::t('amosreport', '#reports_content_list_modal-title'),
+                'modalBodyContent' => $modalContentWarning,
+                'modalClassSize' => 'modal-lg'
             ]);
-        }
 
-        echo $content;
-
-        $modalContentWarning = $reportsListModalWidget . $this->render('report', [
-                'widget' => $this,
-                'context_id' => $this->context_id,
-                'className' => $this->modelClassName,
-                'title' => $this->title
+            /** @var ActiveQuery $query */
+            $query = Report::find()->andWhere([
+                'classname' => $this->model->className(),
+                'context_id' => $this->model->id
             ]);
 
-        $modalCreateReport = ModalUtility::amosModal([
-            'id' => 'modal_report-' . $this->context_id,
-            'headerClass' => 'modal-utility-warning',
-            'headerText' => AmosIcons::show('flag') . AmosReport::t('amosreport', '#reports_content_list_modal-title'),
-            'modalBodyContent' => $modalContentWarning,
-            'modalClassSize' => 'modal-lg'
-        ]);
-
-        /** @var ActiveQuery $query */
-        $query = Report::find()->andWhere([
-            'classname' => $this->model->className(),
-            'context_id' => $this->model->id
-        ]);
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            $dataProvider = new ActiveDataProvider([
+                'query' => $query,
 //            'pagination' => [
 //                'pageSize' => $limit,
 //            ]
-            'sort' => [
-                'defaultOrder' => [
-                    'status' => SORT_ASC,
-                    'created_at' => SORT_ASC
+                'sort' => [
+                    'defaultOrder' => [
+                        'status' => SORT_ASC,
+                        'created_at' => SORT_ASC
+                    ]
                 ]
-            ]
-        ]);
+            ]);
 
-        $modalContentList = $this->render('modal-reports-list', [
-            'model' => $this->model,
-            'dataProvider' => $dataProvider,
-            'context_id' => $this->model->id,
-        ]);
+            $modalContentList = $this->render('modal-reports-list', [
+                'model' => $this->model,
+                'dataProvider' => $dataProvider,
+                'context_id' => $this->model->id,
+            ]);
 
-        $modalListReport = ModalUtility::amosModal([
-            'id' => 'modal_reports_list-' . $this->model->id,
-            'headerClass' => 'modal-utility-confirm',
-            'headerText' => AmosIcons::show('flag') . AmosReport::t('amosreport', '#reports_content_list_modal-title'),
-            'modalBodyContent' => $modalContentList,
-            'modalClassSize' => 'modal-lg'
-        ]);
+            $modalListReport = ModalUtility::amosModal([
+                'id' => 'modal_reports_list-' . $this->model->id,
+                'headerClass' => 'modal-utility-confirm',
+                'headerText' => AmosIcons::show('flag') . AmosReport::t('amosreport', '#reports_content_list_modal-title'),
+                'modalBodyContent' => $modalContentList,
+                'modalClassSize' => 'modal-lg'
+            ]);
 
-        return $modalCreateReport . $modalListReport;
+            return $modalCreateReport . $modalListReport;
+        }
+        return '';
     }
 
     /**
@@ -215,6 +238,7 @@ class ReportDropdownWidget extends Widget
         }
 
         $dropDown = Dropdown::widget([
+            'options' => ['class' => 'pull-right'],
             'items' => $items,
         ]);
 
@@ -235,7 +259,7 @@ class ReportDropdownWidget extends Widget
                 '#',
                 [
                     'data-toggle' => 'dropdown',
-                    'class' => 'btn dropdown-toggle'
+                    'class' => 'btn btn-outline-tertiary dropdown-toggle'
                 ]
             ) . $dropDown
             ,
