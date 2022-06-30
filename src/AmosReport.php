@@ -41,6 +41,14 @@ class AmosReport extends AmosModule implements ModuleInterface
      */
     public $modelsEnabled = [
     ];
+    
+    /**
+     * @var array
+     * if $reportEmails['from'] empty, the report will send the email from Yii::$app->params['email-assistenza']
+     * if $reportEmails['to'] empty, the report will send the email from $tos array
+     */
+    public $reportEmails = [
+    ];
 
     /**
      * This is the html used to render the subject of the e-mail.

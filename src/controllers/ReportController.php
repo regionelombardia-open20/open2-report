@@ -259,6 +259,10 @@ class ReportController extends CrudController
         $contentModel = $className::findOne($model->context_id);
         $contentCreatorId = $contentModel->created_by;
         $contentCreator = User::findOne($contentCreatorId);
+        
+        /** @var CrudController $controller */
+        $controller = \Yii::$app->controller;
+        $moduleReport = \Yii::$app->getModule(AmosReport::getModuleName());
 
         //update model with content creator information
         $model->creator_id = $contentCreatorId;
@@ -276,42 +280,43 @@ class ReportController extends CrudController
         $model->save();
 
         if (!is_null($contentCreator)) {
+			$from = null;
             //send mail to content creator
             $tos = [$contentCreator->email];
 
-            // check for model type report monitor role to send a mail copy
-            // if exists a role 'MODELNAME_REPORT_MONITOR' (same syntax of 'MODELNAME_CREATOR' standard permission)
-            $roleName = strtoupper($contentModel->formName()). '_' . 'REPORT_MONITOR';
-            $roleExists = false;
-            if(Yii::$app->authManager->getRole($roleName)) {
-                $roleExists = true;
-                $reportMonitorIds = Yii::$app->authManager->getUserIdsByRole($roleName);
-                if (count($reportMonitorIds)) {
-                    foreach ($reportMonitorIds as $reportMonitorId) {
-                        $reportMonitor = User::findOne($reportMonitorId);
-                        if ($reportMonitor) {
-                            $email = $reportMonitor->email;
-                            if ($email) {
-                                $tos = ArrayHelper::merge($tos, [$email]);
-                            }
+            if(!empty($moduleReport->reportEmails['to'])){
+                    $tos =ArrayHelper::merge($tos, [$moduleReport->reportEmails['to']]); ;
+            }else{
+                // check for model type report monitor role to send a mail copy
+                // if exists a role 'MODELNAME_REPORT_MONITOR' (same syntax of 'MODELNAME_CREATOR' standard permission)
+                $roleName = strtoupper($contentModel->formName()). '_' . 'REPORT_MONITOR';
+                $roleExists = false;
+                if(Yii::$app->authManager->getRole($roleName)) {
+                        $roleExists = true;
+                        $reportMonitorIds = Yii::$app->authManager->getUserIdsByRole($roleName);
+                        if (count($reportMonitorIds)) {
+                                foreach ($reportMonitorIds as $reportMonitorId) {
+                                        $reportMonitor = User::findOne($reportMonitorId);
+                                        if ($reportMonitor) {
+                                                $email = $reportMonitor->email;
+                                                if ($email) {
+                                                        $tos = ArrayHelper::merge($tos, [$email]);
+                                                }
+                                        }
+                                }
                         }
-                    }
                 }
-            }
 
-            // add validators to mail to mail recipients if model report monitor role not exists
-            if(!is_null($contentValidator) && !$roleExists){
-                if($contentValidator->id != $contentCreator->id) {
-                    $tos[] = $contentValidator->email;
+                // add validators to mail to mail recipients if model report monitor role not exists
+                if(!is_null($contentValidator) && !$roleExists){
+                        if($contentValidator->id != $contentCreator->id) {
+                                $tos[] = $contentValidator->email;
+                        }
                 }
             }
 
             $reportCreatorProfile = User::findOne($model->created_by)->getProfile();
             $reportCreatorName = $reportCreatorProfile->getNomeCognome();
-
-            /** @var CrudController $controller */
-            $controller = \Yii::$app->controller;
-            $moduleReport = \Yii::$app->getModule(AmosReport::getModuleName());
             if($moduleReport){
                 $contentView = $moduleReport->htmlMailContent;
                 $contentViewSubject = $moduleReport->htmlMailSubject;
@@ -332,9 +337,12 @@ class ReportController extends CrudController
                 'report' => $model,
                 'contentModel' => $contentModel,
             ]);
-
+	
+            if(!empty($moduleReport->reportEmails['from'])){
+                    $from = $moduleReport->reportEmails['from'];
+            }
             try {
-                $this->sendMail(null, $tos, $subject, $text);
+                $this->sendMail($from, $tos, $subject, $text);
             } catch (\Exception $ex) {
                 Yii::getLogger()->log($ex->getMessage(), \yii\log\Logger::LEVEL_ERROR);
             }
