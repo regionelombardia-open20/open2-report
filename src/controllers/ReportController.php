@@ -25,6 +25,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\log\Logger;
 
 /**
  * Class ReportController
@@ -36,6 +37,10 @@ class ReportController extends CrudController
      * @var string $layout
      */
     public $layout = 'list';
+    private $actionsPermissions = array(
+        'read-confirmation' => 'read',
+        'report-notification' => 'read'
+    );
 
     /**
      * @inheritdoc
@@ -57,6 +62,38 @@ class ReportController extends CrudController
 
         parent::init();
         $this->setUpLayout();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getRules()
+    {
+        $rules = parent::getRules();
+        $params = [];
+
+        try {
+            if (isset($this->modelObj)) {
+                $params = [
+                    'model' => $this->modelObj
+                ];
+            }
+
+            foreach ($this->actionsPermissions as $act => $perm) {
+                if (Yii::$app->user->can(strtoupper($this->modelName . '_' . $perm), $params) ||
+                    Yii::$app->user->can(get_class($this->modelObj) . '_' . strtoupper($perm), $params)
+                ) {
+                    $rules[] = [
+                        'actions' => [$act],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ];
+                }
+            }
+        } catch (\Exception $ex) {
+            Yii::getLogger()->log($ex->getMessage(), Logger::LEVEL_ERROR);
+        }
+        return $rules;
     }
 
     /**
@@ -238,7 +275,7 @@ class ReportController extends CrudController
         $this->setCurrentView($this->getAvailableView($currentView));
 
         $this->setUpLayout('list');
-        $this->view->params['currentDashboard'] = $this->getCurrentDashboard();
+        //$this->view->params['currentDashboard'] = $this->getCurrentDashboard();
 
         return $this->render('index', [
             'dataProvider' => $this->getDataProvider(),
@@ -259,7 +296,7 @@ class ReportController extends CrudController
         $contentModel = $className::findOne($model->context_id);
         $contentCreatorId = $contentModel->created_by;
         $contentCreator = User::findOne($contentCreatorId);
-        
+
         /** @var CrudController $controller */
         $controller = \Yii::$app->controller;
         $moduleReport = \Yii::$app->getModule(AmosReport::getModuleName());
@@ -337,7 +374,7 @@ class ReportController extends CrudController
                 'report' => $model,
                 'contentModel' => $contentModel,
             ]);
-	
+
             if(!empty($moduleReport->reportEmails['from'])){
                     $from = $moduleReport->reportEmails['from'];
             }

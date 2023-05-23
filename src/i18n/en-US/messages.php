@@ -59,6 +59,7 @@ return [
     'Ordina per' => 'Order by',
     'Photo' => 'Photo',
     'Pubblicato Da' => 'Published By',
+    'Processing, please wait' => 'Processing, please wait',
     'Read confirmation' => 'Read confirmation',
     'Report' => 'Report',
     'Report creator ID' => 'Report creator ID',

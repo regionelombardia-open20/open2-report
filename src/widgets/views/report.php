@@ -171,6 +171,6 @@ ActiveForm::end();
 ?>
 
 
-<?php /*Modal::end();*/ ?>
+<?php /*Modal::end();*/ 
 
 

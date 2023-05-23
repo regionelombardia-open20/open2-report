@@ -59,6 +59,7 @@ return [
     'Ordina per' => 'Ordina per',
     'Photo' => 'Foto',
     'Pubblicato Da' => 'Pubblicato Da',
+    'Processing, please wait' => 'Elaborazione in corso, attendere',
     'Read confirmation' => 'Conferma lettura',
     'Report' => 'Segnalazione',
     'Report creator ID' => 'ID creatore segnalazione',

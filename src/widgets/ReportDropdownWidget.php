@@ -103,7 +103,7 @@ class ReportDropdownWidget extends Widget
                     });
                 });
             });',
-            yii\web\View::POS_END
+            \yii\web\View::POS_END
         );
 
         if (!is_null($this->permissionName)) {

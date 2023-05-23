@@ -146,6 +146,8 @@ $this->registerJs($js, View::POS_READY);
                             }
                             if(empty($notificationRead)) {
                                 $jsConfirm = "
+                                    $('#read-confirmation-btn-".$model->id."').html('".
+                                    AmosReport::t('amosreport', 'Processing, please wait')."');
                                     $.ajax({
                                                 url: '/report/report/read-confirmation',
                                                 type: 'POST',
@@ -157,13 +159,13 @@ $this->registerJs($js, View::POS_READY);
                                                 success: function(response) {
                                                     if(response) {
                                                         $('#ask-confirmation-message-".$model->id."').html('".
-														AmosReport::t('amosreport', 'The report has been updated')."');
-														setTimeout(
-															  function() 
-															  {
-																location.reload();
-															  }, 
-														3000);
+                                                            AmosReport::t('amosreport', 'The report has been updated')."');
+                                                            setTimeout(
+                                                                      function() 
+                                                                      {
+                                                                            location.reload();
+                                                                      }, 
+                                                            2000);
                                                     }    
                                                 }
                                             });
@@ -196,4 +198,4 @@ $this->registerJs($js, View::POS_READY);
     ?>
 </div>
 
-<?php /*Modal::end();*/ ?>
+<?php /*Modal::end();*/ 
